@@ -4,7 +4,7 @@ using QuestPDF.Infrastructure;
 
 namespace QuestPdfPageBreak;
 
-public class Layout
+public static class Layout
 {
     public static void ComposeHeader(IContainer container)
     {
@@ -58,27 +58,49 @@ public class Layout
 
     public static void ComposeContent(IContainer container)
     {
-
         container.Column(column =>
         {
             column.Item()
                 .PreventPageBreak()
-                .Background(Colors.Green.Lighten2)
-                .Height(500);
+                .PaddingBottom(10)
+                .PrimaryCard("Test", cardContent =>
+                {
+                    cardContent.Column(childColumn =>
+                    {
+                        childColumn.Item()
+                            .Height(500)
+                            .Background(Colors.Cyan.Lighten2);
+                    });
+                });
+            
+            column.Item().PageBreak();
+            column.Item().Height(300).Background(Colors.Red.Lighten2);
+            column.Item().PageBreak(); // <- Remove this and it works
             
             column.Item()
                 .PreventPageBreak()
-                .Background(Colors.Blue.Lighten2)
-                .PreventPageBreak()
-                .Column(c =>
+                .PaddingBottom(10)
+                .PrimaryCard("Test", cardContent =>
                 {
-                    c.Item()
-                        .Height(300)
-                        .Background(Colors.Cyan.Lighten2);
-                    
-                    c.Item()
-                        .Height(500)
-                        .Background(Colors.Cyan.Lighten2);
+                    cardContent.Column(childColumn =>
+                    {
+                        childColumn.Item()
+                            .Height(500)
+                            .Background(Colors.Cyan.Lighten2);
+                        
+                        childColumn.Item()
+                            .PreventPageBreak()
+                            .Column(co =>
+                            {
+                                co.Item()
+                                    .Height(500)
+                                    .Background(Colors.Blue.Lighten2);
+
+                                co.Item()
+                                    .Height(500)
+                                    .Background(Colors.Blue.Lighten2);
+                            });
+                    });
                 });
         });
     }
